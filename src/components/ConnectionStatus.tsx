@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, RefreshCw } from "lucide-react";
+
+// Use Docker service name when running in container
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://backend:8080";
 
 interface ConnectionStatusProps {
   className?: string;
@@ -20,21 +23,23 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
       try {
         // Check MongoDB connection
         const mongoResponse = await fetch(
-          "http://localhost:8080/api/health/mongo",
+          `${API_BASE_URL}/api/health/mongo`
         );
         setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
       } catch (error) {
         setMongoStatus("disconnected");
+        console.error("MongoDB connection error:", error);
       }
 
       try {
         // Check Elasticsearch connection
         const elasticResponse = await fetch(
-          "http://localhost:8080/api/health/elasticsearch",
+          `${API_BASE_URL}/api/health/elasticsearch`
         );
         setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
       } catch (error) {
         setElasticStatus("disconnected");
+        console.error("Elasticsearch connection error:", error);
       }
     };
 
@@ -49,7 +54,10 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
       <div className="flex items-center">
         <span className="text-sm mr-2">MongoDB:</span>
         {mongoStatus === "checking" ? (
-          <span className="text-yellow-500 animate-pulse">Checking...</span>
+          <span className="text-yellow-500 flex items-center">
+            <RefreshCw className="h-4 w-4 animate-spin mr-1" />
+            Checking...
+          </span>
         ) : mongoStatus === "connected" ? (
           <CheckCircle className="h-4 w-4 text-green-500" />
         ) : (
@@ -59,7 +67,10 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
       <div className="flex items-center">
         <span className="text-sm mr-2">Elasticsearch:</span>
         {elasticStatus === "checking" ? (
-          <span className="text-yellow-500 animate-pulse">Checking...</span>
+          <span className="text-yellow-500 flex items-center">
+            <RefreshCw className="h-4 w-4 animate-spin mr-1" />
+            Checking...
+          </span>
         ) : elasticStatus === "connected" ? (
           <CheckCircle className="h-4 w-4 text-green-500" />
         ) : (
