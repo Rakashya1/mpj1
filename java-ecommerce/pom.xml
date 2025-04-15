@@ -9,7 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     
+    <groupId>com.ecommerce</groupId>
     <artifactId>java-ecommerce</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <name>MPJ E-commerce</name>
     <description>E-commerce application with Java frontend and MongoDB/Elasticsearch backend</description>
     

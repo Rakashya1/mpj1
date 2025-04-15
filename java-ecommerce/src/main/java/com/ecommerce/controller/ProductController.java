@@ -72,24 +72,20 @@ public class ProductController {
     public String filterProducts(
             @RequestParam(required = false) List<String> categories,
             @RequestParam(required = false, defaultValue = "0") BigDecimal minPrice,
-            @RequestParam(required = false, defaultValue = "10000") BigDecimal maxPrice,defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "0") Double rating,    @RequestParam(defaultValue = "12") int size,
-            Model model) {
+            @RequestParam(required = false, defaultValue = "10000") BigDecimal maxPrice,
+            @RequestParam(required = false, defaultValue = "0") Double rating,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "DESC") String direction,
-        List<Product> filteredProducts = productService.getProductsByFilters(categories, minPrice, maxPrice, rating);
+            Model model) {
         
-        model.addAttribute("products", filteredProducts);
-        model.addAttribute("categories", categories);ries={}, minPrice={}, maxPrice={}, rating={}", 
-        model.addAttribute("minPrice", minPrice);e, rating);
-        model.addAttribute("maxPrice", maxPrice);
-        model.addAttribute("rating", rating);List<Product> filteredProducts;
-        model.addAttribute("totalItems", filteredProducts.size());
-           // If no filters are applied, return all products paginated
-        return "product/list";       if ((categories == null || categories.isEmpty()) && 
-    }            minPrice.compareTo(BigDecimal.ZERO) == 0 && 
-
-
-}            maxPrice.compareTo(new BigDecimal("10000")) == 0 && 
+        List<Product> filteredProducts;
+        
+        // If no filters are applied, return all products paginated
+        if ((categories == null || categories.isEmpty()) && 
+            minPrice.compareTo(BigDecimal.ZERO) == 0 && 
+            maxPrice.compareTo(new BigDecimal("10000")) == 0 && 
             rating == 0) {
             
             Page<Product> productPage = productService.getProductsPaginated(page, size, sort, direction);
