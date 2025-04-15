@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,19 +48,21 @@ public class ProductServiceNoElasticsearch implements ProductService {
     @Override
     public List<Product> search(String query) {
         // Implement a simple search using MongoDB instead of Elasticsearch
-        // This is a simplified implementation that searches only by name
-        return productMongoRepository.findByNameContainingIgnoreCase(query);
+        return productMongoRepository.findByNameOrDescriptionContainingIgnoreCase(query);
     }
 
     @Override
     public List<Product> filter(List<String> categories, double minPrice, double maxPrice, double minRating) {
         // Implement filtering using MongoDB instead of Elasticsearch
+        BigDecimal minPriceBD = BigDecimal.valueOf(minPrice);
+        BigDecimal maxPriceBD = BigDecimal.valueOf(maxPrice);
+        Double minRatingD = minRating;
+        
         if (categories != null && !categories.isEmpty()) {
-            return productMongoRepository.findByCategoryInAndPriceBetweenAndRatingGreaterThanEqual(
-                    categories, minPrice, maxPrice, minRating);
+            return productMongoRepository.findByFilters(categories, minPriceBD, maxPriceBD, minRatingD);
         } else {
-            return productMongoRepository.findByPriceBetweenAndRatingGreaterThanEqual(
-                    minPrice, maxPrice, minRating);
+            // If no categories specified, use price and rating filters only
+            return productMongoRepository.findByPriceRange(minPriceBD, maxPriceBD);
         }
     }
 }
