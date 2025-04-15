@@ -2,7 +2,7 @@
  * API Service for connecting to the Java backend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://backend:8080";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 // Helper function to check if the backend is available
 export const checkBackendConnection = async (): Promise<boolean> => {
@@ -35,6 +35,9 @@ export interface Product {
   isNew?: boolean;
 }
 
+// Import mock data
+import { mockProducts } from "./mockData";
+
 // Fetch all products
 export const fetchProducts = async (): Promise<Product[]> => {
   try {
@@ -47,7 +50,8 @@ export const fetchProducts = async (): Promise<Product[]> => {
     return await response.json();
   } catch (error) {
     console.error("Error fetching products:", error);
-    return [];
+    console.log("Using mock data instead");
+    return mockProducts;
   }
 };
 
@@ -64,7 +68,14 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
     return await response.json();
   } catch (error) {
     console.error("Error searching products:", error);
-    return [];
+    console.log("Using client-side search with mock data instead");
+    // Fallback to client-side search with mock data
+    return mockProducts.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.description?.toLowerCase().includes(query.toLowerCase()) ||
+        product.category.toLowerCase().includes(query.toLowerCase()),
+    );
   }
 };
 
@@ -93,7 +104,26 @@ export const filterProducts = async (
     return await response.json();
   } catch (error) {
     console.error("Error filtering products:", error);
-    return [];
+    console.log("Using client-side filtering with mock data instead");
+    // Fallback to client-side filtering with mock data
+    return mockProducts.filter((product) => {
+      // Apply category filter
+      if (categories.length > 0 && !categories.includes(product.category)) {
+        return false;
+      }
+
+      // Apply price range filter
+      if (product.price < minPrice || product.price > maxPrice) {
+        return false;
+      }
+
+      // Apply rating filter
+      if (rating > 0 && product.rating < rating) {
+        return false;
+      }
+
+      return true;
+    });
   }
 };
 
@@ -107,6 +137,9 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     return await response.json();
   } catch (error) {
     console.error(`Error fetching product with ID ${id}:`, error);
-    return null;
+    console.log("Using mock data instead");
+    // Fallback to mock data
+    const product = mockProducts.find((p) => p.id === id);
+    return product || null;
   }
 };

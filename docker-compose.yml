@@ -11,6 +11,11 @@ services:
       - mongodb_data:/data/db
     networks:
       - ecommerce-network
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Elasticsearch service
   elasticsearch:
@@ -20,12 +25,21 @@ services:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - xpack.security.enabled=false
+      - http.host=0.0.0.0
+      - transport.host=0.0.0.0
+      - network.host=0.0.0.0
     ports:
       - "9200:9200"
+      - "9300:9300"
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
       - ecommerce-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Java backend service
   backend:
@@ -36,8 +50,10 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mongodb
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
     environment:
       - SPRING_DATA_MONGODB_HOST=mongodb
       - SPRING_DATA_MONGODB_PORT=27017

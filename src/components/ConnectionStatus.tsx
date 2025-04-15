@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { CheckCircle, XCircle, RefreshCw } from "lucide-react";
 
 // Use Docker service name when running in container
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://backend:8080";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 interface ConnectionStatusProps {
   className?: string;

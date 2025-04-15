@@ -6,6 +6,7 @@ import ProductGrid from "./ProductGrid";
 import FilterSidebar from "./FilterSidebar";
 import CartPreview from "./CartPreview";
 import ConnectionStatus from "./ConnectionStatus";
+import BackendStatusBanner from "./BackendStatusBanner";
 import {
   fetchProducts,
   searchProducts,
@@ -254,6 +255,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <BackendStatusBanner />
       {/* Header */}
       <header className="sticky top-0 z-10 bg-white border-b shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
