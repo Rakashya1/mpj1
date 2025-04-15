@@ -3,6 +3,7 @@ import { useRoutes, Routes, Route } from "react-router-dom";
 import Home from "./components/home";
 import BackendConnectionFix from "./components/BackendConnectionFix";
 import ConnectionTest from "./components/ConnectionTest";
+import BackendFixGuide from "./components/BackendFixGuide";
 import routes from "tempo-routes";
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
       <>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/backend-fix" element={<BackendConnectionFix />} />
+          <Route path="/backend-fix" element={<BackendFixGuide />} />
           <Route path="/connection-test" element={<ConnectionTest />} />
         </Routes>
         {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
