@@ -19,47 +19,31 @@ public class HealthController {
     @Autowired
     private ElasticsearchOperations elasticsearchOperations;
 
-    @GetMapping("/mongo")
-    public ResponseEntity<String> checkMongoConnection() {
-        try {
-            // Try to ping MongoDB
-            mongoTemplate.getDb().runCommand(new org.bson.Document("ping", 1));
-            return ResponseEntity.ok("MongoDB connection successful");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("MongoDB connection failed: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/elasticsearch")
-    public ResponseEntity<String> checkElasticsearchConnection() {
-        try {
-            // Try to check Elasticsearch by performing a simple operation
-            // Instead of using NativeSearchQueryBuilder, we'll just check if the client exists
-            boolean isConnected = elasticsearchOperations != null;
-            if (isConnected) {
-                return ResponseEntity.ok("Elasticsearch connection successful");
-            } else {
-                return ResponseEntity.status(500).body("Elasticsearch connection failed");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Elasticsearch connection failed: " + e.getMessage());
-        }
-    }
-
     @GetMapping
-    public ResponseEntity<String> checkHealth() {
+    public String healthCheck() {
+        return "OK";
+    }
+
+    @GetMapping("/detailed")
+    public ResponseEntity<Map<String, String>> checkDetailedHealth() {
+        Map<String, String> status = new HashMap<>();
+        
+        // Check MongoDB
         try {
-            // Check both connections
             mongoTemplate.getDb().runCommand(new org.bson.Document("ping", 1));
-            boolean esConnected = elasticsearchOperations != null;
-            
-            if (esConnected) {
-                return ResponseEntity.ok("All services are healthy");
-            } else {
-                return ResponseEntity.status(500).body("Elasticsearch connection failed");
-            }
+            status.put("mongodb", "connected");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Health check failed: " + e.getMessage());
+            status.put("mongodb", "disconnected");
         }
+
+        // Check Elasticsearch
+        try {
+            boolean esConnected = elasticsearchOperations.indexOps(Product.class).exists();
+            status.put("elasticsearch", esConnected ? "connected" : "disconnected");
+        } catch (Exception e) {
+            status.put("elasticsearch", "disconnected");
+        }
+
+        return ResponseEntity.ok(status);
     }
 }
