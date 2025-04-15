@@ -23,6 +23,9 @@ const ConnectionTest = () => {
 
   useEffect(() => {
     checkConnection();
+    // Set up interval to check connection every 30 seconds
+    const interval = setInterval(checkConnection, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -49,6 +52,11 @@ const ConnectionTest = () => {
           <AlertDescription>
             Could not connect to the backend API. Please check that the backend
             server is running.
+            <div className="mt-2">
+              <a href="/backend-fix" className="underline font-medium">
+                Go to Backend Fix Guide
+              </a>
+            </div>
           </AlertDescription>
         </Alert>
       )}

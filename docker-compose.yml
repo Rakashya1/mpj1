@@ -50,8 +50,6 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      elasticsearch:
-        condition: service_healthy
       mongodb:
         condition: service_started
     environment:
@@ -61,6 +59,8 @@ services:
       - SPRING_DATA_MONGODB_DATABASE=ecommerce
       - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
       - SPRING_DATA_MONGODB_AUTO_INDEX_CREATION=true
+      - ELASTICSEARCH_ENABLED=${ELASTICSEARCH_ENABLED:-true}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
     networks:
       - ecommerce-network
 
