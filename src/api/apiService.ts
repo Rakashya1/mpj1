@@ -2,7 +2,7 @@
  * API Service for connecting to the Java backend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://backend:8080";
 
 // Helper function to check if the backend is available
 export const checkBackendConnection = async (): Promise<boolean> => {

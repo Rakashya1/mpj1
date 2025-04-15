@@ -21,7 +21,8 @@ const BackendConnectionFix = () => {
       // Check MongoDB connection
       try {
         const mongoResponse = await fetch(
-          "http://localhost:8080/api/health/mongo",
+          "http://backend:8080/api/health/mongo",
+          { credentials: "include" },
         );
         setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
         if (!mongoResponse.ok) {
@@ -42,7 +43,8 @@ const BackendConnectionFix = () => {
       // Check Elasticsearch connection
       try {
         const elasticResponse = await fetch(
-          "http://localhost:8080/api/health/elasticsearch",
+          "http://backend:8080/api/health/elasticsearch",
+          { credentials: "include" },
         );
         setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
         if (!elasticResponse.ok) {

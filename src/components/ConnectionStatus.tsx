@@ -22,9 +22,9 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
     const checkConnections = async () => {
       try {
         // Check MongoDB connection
-        const mongoResponse = await fetch(
-          `${API_BASE_URL}/api/health/mongo`
-        );
+        const mongoResponse = await fetch(`${API_BASE_URL}/api/health/mongo`, {
+          credentials: "include",
+        });
         setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
       } catch (error) {
         setMongoStatus("disconnected");
@@ -34,7 +34,8 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
       try {
         // Check Elasticsearch connection
         const elasticResponse = await fetch(
-          `${API_BASE_URL}/api/health/elasticsearch`
+          `${API_BASE_URL}/api/health/elasticsearch`,
+          { credentials: "include" },
         );
         setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
       } catch (error) {
